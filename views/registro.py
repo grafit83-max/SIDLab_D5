@@ -1,8 +1,7 @@
-# pages/registro.py
 import time
 import streamlit as st
 from datetime import datetime, date
-
+from zoneinfo import ZoneInfo
 from config.settings import EDIFICIOS, TURNOS, ASIGNATURAS, HORARIO_APERTURA, HORARIO_CIERRE
 from database.database import get_connection
 from utils.firmas import generar_firma_digital
@@ -42,7 +41,7 @@ def render():
             "profesor_logueado": None, "num_empleado": None,
             "requiere_cambio": 0, "es_admin": False,
             "puede_descargar": False,
-            "hora_entrada_fija": datetime.now().time(),
+            "hora_entrada_fija": datetime.now(ZoneInfo("America/Mexico_City")).time(),        
             "login_intentos": 0, "login_bloqueado_hasta": None,
             "chat_historia": [], "pendiente_confirmacion": None,
             "cierre_pendiente": False,
@@ -116,7 +115,7 @@ def render():
             "login_bloqueado_hasta": None, "chat_historia": [],
             "pendiente_confirmacion": None, "cerrando_sesion": False,
             "ultima_firma": None, "ultimo_registro": None,
-            "hora_entrada_fija": datetime.now().time(),
+            "hora_entrada_fija": datetime.now(ZoneInfo("America/Mexico_City")).time(),
         }.items():
             st.session_state[k] = v
         st.rerun()
@@ -124,13 +123,13 @@ def render():
 
     # ── Verificar sesión activa — SOLO para profesores, nunca admin/control ──
     fecha_hoy   = date.today().strftime("%Y-%m-%d")
-    ahora_str   = datetime.now().strftime("%H:%M")
-    ahora_time  = datetime.now().time()
+    ahora_str   = datetime.now(ZoneInfo("America/Mexico_City")).strftime("%H:%M")
+    ahora_time  = datetime.now(ZoneInfo("America/Mexico_City")).time()
 
     sesion_activa = None
     if not es_admin_o_control:
         from datetime import timedelta
-        ahora_mas_margen = (datetime.now() - timedelta(minutes=1)).strftime("%H:%M")
+        ahora_mas_margen = (datetime.now(ZoneInfo("America/Mexico_City")) - timedelta(minutes=1)).strftime("%H:%M")
         conn_check = get_connection()
         c_check = conn_check.cursor()
         c_check.execute(
@@ -152,7 +151,7 @@ def render():
         # Calcular segundos restantes hasta 1 minuto después de la hora de salida
         try:
             h_sal, m_sal = map(int, ssal.split(":"))
-            ahora_dt = datetime.now()
+            ahora_dt = datetime.now(ZoneInfo("America/Mexico_City"))
             salida_dt = ahora_dt.replace(hour=h_sal, minute=m_sal, second=0, microsecond=0)
             # +1 minuto de margen: el formulario se habilita a salida+1min
             from datetime import timedelta as _td
@@ -234,7 +233,7 @@ def render():
                     st.warning("⚠️ Se detectó una posible falla. Se notificó al responsable.")
                 st.session_state.pop("pendiente_confirmacion", None)
                 st.session_state.pop("form_borrador", None)
-                st.session_state.hora_entrada_fija = datetime.now().time()
+                st.session_state.hora_entrada_fija = datetime.now(ZoneInfo("America/Mexico_City")).time()
 
                 es_solo_profesor = (
                     not st.session_state.es_admin and
@@ -304,7 +303,7 @@ def render():
 
         edificio = st.session_state.edificio_sel
         st.markdown("---")
-        entrada_fija = datetime.now().replace(second=0, microsecond=0).time()
+        entrada_fija = datetime.now(ZoneInfo("America/Mexico_City")).replace(second=0, microsecond=0).time()
         entrada_str  = entrada_fija.strftime("%H:%M")
 
         # Turno automático: 07:00–11:59 → Matutino | 12:00–21:00 → Vespertino
