@@ -1,9 +1,11 @@
 # services/dashboard_service.py
-from datetime import date, datetime
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from database.database import get_connection
 
 def get_stats_hoy() -> dict:
-    hoy = date.today().strftime("%Y-%m-%d")
+    # Fecha exacta de México
+    hoy = datetime.now(ZoneInfo("America/Mexico_City")).strftime("%Y-%m-%d")
     conn = get_connection()
     c = conn.cursor()
     c.execute("SELECT COUNT(*) FROM bitacora WHERE fecha = %s", (hoy,))
@@ -19,8 +21,11 @@ def get_stats_hoy() -> dict:
             "labs_usados": labs_usados, "total_historico": total_hist}
 
 def get_ocupacion_actual() -> dict:
-    ahora = datetime.now().strftime("%H:%M")
-    hoy   = date.today().strftime("%Y-%m-%d")
+    # Hora y fecha exactas de México
+    hora_mx = datetime.now(ZoneInfo("America/Mexico_City"))
+    ahora = hora_mx.strftime("%H:%M")
+    hoy   = hora_mx.strftime("%Y-%m-%d")
+    
     conn  = get_connection()
     c     = conn.cursor()
     
