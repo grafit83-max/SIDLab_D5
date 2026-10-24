@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 # ── IMPORTS DE NUESTRA ARQUITECTURA ──
@@ -95,7 +96,7 @@ defaults = {
     "requiere_cambio": 0,
     "es_admin": False,
     "puede_descargar": False,
-    "hora_entrada_fija": datetime.now().time(),
+    "hora_entrada_fija": datetime.now(ZoneInfo("America/Mexico_City")).time(),
     "login_intentos": 0,
     "login_bloqueado_hasta": None,
     "chat_historia": [],
@@ -142,7 +143,7 @@ with st.sidebar:
                         st.session_state.es_admin          = (rol == "admin")
                         st.session_state.puede_descargar   = True
                         st.session_state.requiere_cambio   = 0
-                        st.session_state.hora_entrada_fija = datetime.now().time()
+                        st.session_state.hora_entrada_fija = datetime.now(ZoneInfo("America/Mexico_City")).time()
                         st.session_state.login_intentos    = 0
                         for k in ["cerrando_sesion", "ultima_firma", "ultimo_registro",
                                   "pendiente_confirmacion", "form_borrador"]:
@@ -161,7 +162,7 @@ with st.sidebar:
                                 st.session_state.requiere_cambio   = res["requiere_cambio"]
                                 st.session_state.es_admin          = False
                                 st.session_state.puede_descargar   = False
-                                st.session_state.hora_entrada_fija = datetime.now().time()
+                                st.session_state.hora_entrada_fija = datetime.now(ZoneInfo("America/Mexico_City")).time()
                                 st.session_state.login_intentos    = 0
                                 for k in ["cerrando_sesion", "ultima_firma", "ultimo_registro",
                                           "pendiente_confirmacion", "form_borrador"]:
