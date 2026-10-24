@@ -122,7 +122,7 @@ def render():
         return
 
     # ── Verificar sesión activa — SOLO para profesores, nunca admin/control ──
-    fecha_hoy   = date.today().strftime("%Y-%m-%d")
+    fecha_hoy   = datetime.now(ZoneInfo("America/Mexico_City")).strftime("%Y-%m-%d")
     ahora_str   = datetime.now(ZoneInfo("America/Mexico_City")).strftime("%H:%M")
     ahora_time  = datetime.now(ZoneInfo("America/Mexico_City")).time()
 
@@ -438,7 +438,7 @@ def render():
     # Mini historial del día
     st.markdown("---")
     st.markdown("#### Mis registros de hoy")
-    hoy_str = date.today().strftime("%Y-%m-%d")
+    hoy_str = datetime.now(ZoneInfo("America/Mexico_City")).strftime("%Y-%m-%d")
     conn = get_connection()
     df_hoy = pd.read_sql_query(
         "SELECT laboratorio, turno, entrada, salida, asignatura, grado_grupo, observaciones, analisis_obs "
