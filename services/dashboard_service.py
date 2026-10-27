@@ -1,4 +1,5 @@
 # services/dashboard_service.py
+import streamlit as st
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from database.database import get_connection
@@ -20,6 +21,7 @@ def get_stats_hoy() -> dict:
     return {"total_hoy": total_hoy, "fallas_hoy": fallas_hoy,
             "labs_usados": labs_usados, "total_historico": total_hist}
 
+@st.cache_data(ttl=30)
 def get_ocupacion_actual() -> dict:
     # Hora y fecha exactas de México
     hora_mx = datetime.now(ZoneInfo("America/Mexico_City"))

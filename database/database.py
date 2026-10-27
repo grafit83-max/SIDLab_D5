@@ -1,6 +1,7 @@
 import psycopg2
 import streamlit as st
 
+@st.cache_resource
 def get_connection():
     # Extrae la cadena de conexión completa desde secrets.toml
     db_url = st.secrets["postgres"]["url"]
